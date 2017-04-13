@@ -26,4 +26,10 @@ describe("A suit for taxi fee function", function () {
         const result = calculateTaxiFee(distance, waitingTime);
         expect(result).toBe(14);
     });
+    it("return error input when distance and distance and waiting time is float number", function () {
+        const distance = 3.5;
+        const waitingTime = 10.5;
+        const result = calculateTaxiFee(distance, waitingTime);
+        expect(result).toBe(10);
+    });
 });
