@@ -3,6 +3,10 @@
  */
 
 function calculateTaxiFee(distance, waitingTime) {
+    if (isNaN(distance) || isNaN(waitingTime)){
+        console.error('invalid input');
+        return;
+    }
     let taxiFee = 0;
     const START_PRICE = 6;
     const EACH_KM_PRICE = 0.8;
