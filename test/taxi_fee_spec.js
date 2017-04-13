@@ -13,5 +13,12 @@ describe("A suit for taxi fee function", function () {
         const waitingTime = 0;
         const result = calculateTaxiFee(distance, waitingTime);
         expect(result).toBe(8);
-    })
+    });
+    it("return expect result when distance great than 8km and no waiting time", function () {
+        const distance = 10;
+        const waitingTime = 0;
+        const result = calculateTaxiFee(distance, waitingTime);
+        expect(result).toBe(13);
+    });
+
 });
