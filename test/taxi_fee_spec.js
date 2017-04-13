@@ -20,5 +20,10 @@ describe("A suit for taxi fee function", function () {
         const result = calculateTaxiFee(distance, waitingTime);
         expect(result).toBe(13);
     });
-
+    it("return expect result when have 30mins waiting time", function () {
+        const distance = 1;
+        const waitingTime = 30;
+        const result = calculateTaxiFee(distance, waitingTime);
+        expect(result).toBe(14);
+    });
 });

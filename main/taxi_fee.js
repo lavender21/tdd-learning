@@ -7,9 +7,10 @@ function calculateTaxiFee(distance, waitingTime) {
     if (distance <= 2){
         taxiFee = 6;
     }else if(distance > 2 && distance < 8){
-        taxiFee = Math.round((distance-2) * 0.8 + 6);
+        taxiFee = (distance-2) * 0.8 + 6;
     }else if(distance > 8){
-        taxiFee = Math.round((distance-2) * 0.8 +(distance-8) * 0.4 + 6);
+        taxiFee = (distance-2) * 0.8 +(distance-8) * 0.4 + 6;
     }
-    return taxiFee;
+    taxiFee += waitingTime * 0.25;
+    return Math.round(taxiFee);
 }
