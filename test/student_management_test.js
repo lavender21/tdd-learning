@@ -33,5 +33,60 @@ describe("A suit for generateStudentInfo function", function () {
             expect(result).toBe(false);
         });
     });
+});
 
+describe("A suit for date type convert functions", function () {
+    describe("A suit for convertToStudentObject function", function () {
+        it("return studentObject data type when input valid student info", function () {
+            const input = "宁润婷,111,汉,物网131,语文:80,数学:90,英语:85,计算机:90";
+            const result = convertToStudentObject(input);
+            const output = {
+                name: '宁润婷', id: '111', nation: '汉', class: '物网131',
+                score: [{'语文': 80},{'数学': 90},{'英语': 85},{'计算机': 90}]
+            };
+            expect(result).toEqual(output);
+        });
+        it("return invalid input when input invalid student info", function () {
+            const input = "宁润婷 111 han ddddd";
+            spyOn(console,'error');
+            convertToStudentObject(input);
+            expect(console.error).toHaveBeenCalledWith('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
+        });
+        it("return invalid input when input invalid student info", function () {
+            const input = "宁润婷,111,汉,物网131,语文-80,数学-90,英语-85,计算机-90";
+            spyOn(console,'error');
+            convertToStudentObject(input);
+            expect(console.error).toHaveBeenCalledWith('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
+        });
+    });
+    describe("A suit for convertToStudentIdList", function () {
+        beforeAll(function () {
+           allStudentInfo = {'111':{},'123':{},'135':{}};
+        });
+        afterAll(function () {
+           allStudentInfo = {};
+        });
+       it("return string arr when input is student id string", function () {
+            const input = "111,123,135";
+            const output = ['111','123','135'];
+            const result = convertToStudentIdList(input);
+            expect(result).toEqual(output);
+       });
+       it("console.error invalid input when input is invalid", function () {
+           const input = "1112321312 sdfsfs233";
+           spyOn(console,'error');
+           convertToStudentIdList(input);
+           expect(console.error).toHaveBeenCalledWith('请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：');
+       });
+       it("return string arr and console.error some student not exist when allStudentInfo not contains input student", function () {
+            const input = "111,222,135";
+            const output = ['111','135'];
+
+            spyOn(console,'error');
+            const result = convertToStudentIdList(input);
+
+            expect(console.error).toHaveBeenCalledWith('222 不存在该学生信息');
+            expect(result).toEqual(output);
+       });
+    });
 });
