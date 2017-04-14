@@ -14,7 +14,7 @@ describe("A suit for printMenu function", function () {
    });
 });
 
-describe("A suit for generateStudentInfo function", function () {
+describe("suits for generateStudentInfo function", function () {
     describe("A suit for isStudentExist function", function () {
         beforeAll(function () {
             allStudentInfo = {'123':{name:'aa',id:'123'}};
@@ -31,6 +31,54 @@ describe("A suit for generateStudentInfo function", function () {
             const input = "111";
             const result = isStudentExist(input);
             expect(result).toBe(false);
+        });
+    });
+
+    describe("A suit for addStudentInfo function", function () {
+       it("return true when input studentObj is added success", function () {
+            const input = {
+                name: '宁润婷', id: '111', nation: '汉', class: '物网131',
+                score: [{'语文': 80},{'数学': 90},{'英语': 85},{'计算机': 90}]
+            };
+
+            const result = addStudentInfo(input);
+
+            expect(result).toBe(true);
+       });
+        it("return false when input studentObj is added success", function () {
+            const input = {
+                name: '宁润婷', nation: '汉', class: '物网131',
+                score: [{'语文': 80},{'数学': 90},{'英语': 85},{'计算机': 90}]
+            };
+
+            const result = addStudentInfo(input);
+
+            expect(result).toBe(false);
+        });
+    });
+
+    describe("A suit for generateStudentInfo functino", function () {
+        beforeAll(function () {
+           allStudentInfo = {'111':{}};
+        });
+        afterAll(function () {
+            allStudentInfo = {};
+        });
+        it("console log 学生XXX添加成功 when input a student info", function () {
+            const input = "宁润婷,113,汉,物网131,语文:80,数学:90,英语:85,计算机:90";
+            spyOn(console,'log');
+
+            generateStudentInfo(input);
+
+            expect(console.log).toHaveBeenCalledWith('学生宁润婷的成绩被添加');
+        });
+        it("console log 该学生信息已存在 when input a exist student info", function () {
+            const input = "宁润婷,111,汉,物网131,语文:80,数学:90,英语:85,计算机:90";
+            spyOn(console,'log');
+
+            generateStudentInfo(input);
+
+            expect(console.log).toHaveBeenCalledWith('改学生信息已经存在');
         });
     });
 });

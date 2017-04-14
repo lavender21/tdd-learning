@@ -51,3 +51,23 @@ function convertToStudentIdList(studentIdStr) {
        return isStudentExist(item);
     });
 }
+
+function addStudentInfo(studentObj) {
+    if (!studentObj.hasOwnProperty('id')){
+        return false;
+    }
+    allStudentInfo[studentObj.id] = studentObj;
+    return true;
+}
+
+function generateStudentInfo(input) {
+    let studentObj = convertToStudentObject(input);
+    if (isStudentExist(studentObj.id)){
+        console.log('改学生信息已经存在');
+        return;
+    }
+    if (addStudentInfo(studentObj)){
+        console.log(`学生${studentObj.name}的成绩被添加`);
+        return;
+    }
+}
