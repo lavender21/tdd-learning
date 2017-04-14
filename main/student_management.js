@@ -71,3 +71,15 @@ function generateStudentInfo(input) {
         return;
     }
 }
+
+function getStudentInfo(studentIdArr) {
+    return studentIdArr.filter(item => {
+        if (!isStudentExist(item)){
+            console.error(`不存${item}的信息`);
+        }
+        return isStudentExist(item);
+    }).map(item => {
+            return allStudentInfo[item];
+        });
+
+}

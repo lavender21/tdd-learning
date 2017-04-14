@@ -83,6 +83,42 @@ describe("suits for generateStudentInfo function", function () {
     });
 });
 
+describe("suits for generateStudentScore function", function () {
+    describe("A suit for getStudentInfo function", function () {
+        beforeAll(function () {
+           allStudentInfo = {
+               '111':{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90}]},
+               '123':{name:'aaa',id:'123',nation:'han',class:'131',score:[{'语文':90}]},
+               '135':{name:'aaa',id:'135',nation:'han',class:'131',score:[{'语文':90}]},
+           }
+        });
+        afterAll(function () {
+            allStudentInfo = {};
+        });
+        it("return student info list when input student id list", function () {
+            const input = ['111','123','135'];
+            const output = [{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90}]},
+                {name:'aaa',id:'123',nation:'han',class:'131',score:[{'语文':90}]},
+                {name:'aaa',id:'135',nation:'han',class:'131',score:[{'语文':90}]}];
+
+            const result = getStudentInfo(input);
+
+            expect(result).toEqual(output);
+        });
+        it("console log 不存333的信息 when input student id list contain not exist student id", function () {
+            const input = ['111','123','333'];
+            const output = [{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90}]},
+                {name:'aaa',id:'123',nation:'han',class:'131',score:[{'语文':90}]}];
+
+            spyOn(console,'error');
+            const result = getStudentInfo(input);
+
+            expect(console.error).toHaveBeenCalledWith('不存333的信息');
+            expect(result).toEqual(output);
+        });
+    });
+});
+
 describe("A suit for date type convert functions", function () {
     describe("A suit for convertToStudentObject function", function () {
         it("return studentObject data type when input valid student info", function () {
