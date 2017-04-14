@@ -13,3 +13,25 @@ describe("A suit for printMenu function", function () {
 
    });
 });
+
+describe("A suit for generateStudentInfo function", function () {
+    describe("A suit for isStudentExist function", function () {
+        beforeAll(function () {
+            allStudentInfo = {'123':{name:'aa',id:'123'}};
+        });
+        afterAll(function () {
+            allStudentInfo = {};
+        });
+        it("shoud return true when input student is exist", function () {
+            const input = "123";
+            const result = isStudentExist(input);
+            expect(result).toBe(true);
+        });
+        it("shoud return false when input student is not exist", function () {
+            const input = "111";
+            const result = isStudentExist(input);
+            expect(result).toBe(false);
+        });
+    });
+
+});
