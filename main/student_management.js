@@ -83,3 +83,38 @@ function getStudentInfo(studentIdArr) {
         });
 
 }
+
+function calculateScore(studentList) {
+    let klassList = {};
+    for(let id in allStudentInfo){
+        if (!klassList.hasOwnProperty(allStudentInfo[id].class)) {
+            klassList[allStudentInfo[id].class] = [];
+        }
+        klassList[allStudentInfo[id].class].push(allStudentInfo[id]);
+    }
+
+    for(let classId in klassList){
+        let average = 0;
+        let middleScore = [];
+        let klassScore = klassList[classId].map(item => {
+            let sumScore = 0;
+            item.score.forEach(val => {
+                sumScore += val[Object.keys(val)];
+            });
+            item.average = sumScore / item.score.length;
+            item.sumScore = sumScore;
+            average += sumScore;
+            middleScore.push(Number(sumScore));
+            return item;
+        });
+        let middleItem = middleScore.sort()[parseInt(middleScore.length/2)];
+        klassList[classId] = Object.assign({},{studentList:klassScore},{average:average/klassScore.length,middleScore:middleItem})
+    }
+
+    let klass = allStudentInfo[studentList[0]].class;
+    let scoreList = klassList[klass].studentList.filter(item => {
+       return studentList.indexOf(item.id) > -1;
+    });
+    return Object.assign({}, {studentList:scoreList,
+        average:klassList[klass].average,middleScore:klassList[klass].middleScore});
+}
