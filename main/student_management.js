@@ -118,3 +118,32 @@ function calculateScore(studentList) {
     return Object.assign({}, {studentList:scoreList,
         average:klassList[klass].average,middleScore:klassList[klass].middleScore});
 }
+
+function printStudentScore(scoreObj) {
+    let subjectStr = "";
+    scoreObj.studentList[0].score.forEach(item => {
+        subjectStr += Object.keys(item)+'|';
+    });
+    let scoreListStr = "";
+    scoreObj.studentList.forEach(item => {
+       scoreListStr += item.name + '|';
+       item.score.forEach(val => {
+          scoreListStr += val[Object.keys(val)]+'|';
+       });
+       scoreListStr += item.average + '|' + item.sumScore + '\n';
+    });
+    let result = `成绩单\n姓名|${subjectStr}平均分|总分\n`+
+        `========================\n${scoreListStr}========================\n`+
+        `全班总分平均数：${scoreObj.average}\n全班总分中位数：${scoreObj.middleScore}\n`;
+    console.log(result);
+}
+
+function generateStudentScore(studentIdStr) {
+    let studentIdArr = convertToStudentIdList(studentIdStr);
+    if (studentIdArr.length === 0){
+        return;
+    }
+    let scoreObj = calculateScore(studentIdArr);
+    printStudentScore(scoreObj);
+    printMenu();
+}
