@@ -1,0 +1,22 @@
+{
+  "name": "studentmanagement",
+  "version": "1.0.0",
+  "description": "",
+  "main": "student_management.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lavender21/tdd-practice.git"
+  },
+  "author": "lavender",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lavender21/tdd-practice/issues"
+  },
+  "homepage": "https://github.com/lavender21/tdd-practice#readme"
+}
