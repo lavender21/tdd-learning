@@ -124,8 +124,11 @@ function printStudentScore(scoreObj) {
 
 function generateStudentScore(studentIdStr) {
     let studentIdArr = convertToStudentIdList(studentIdStr);
+    if (!studentIdArr){
+        return false;
+    }
     let filterStudentIdArr = filterStudentId(studentIdArr);
-    if (studentIdArr.length === 0 || filterStudentIdArr.length === 0){
+    if (filterStudentIdArr.length === 0){
         return false;
     }
     let scoreObj = calculateScore(filterStudentIdArr);
