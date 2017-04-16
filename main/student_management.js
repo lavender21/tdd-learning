@@ -35,7 +35,7 @@ function convertToStudentObject(studentInfoStr) {
 }
 
 function convertToStudentIdList(studentIdStr) {
-    if (studentIdStr.indexOf(',') === -1){
+    if (studentIdStr.indexOf(',') === -1 && !isStudentExist(studentIdStr)){
         console.error('请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：');
         return false;
     }

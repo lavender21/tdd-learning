@@ -231,8 +231,23 @@ describe("A suit for date type convert functions", function () {
             expect(console.error).toHaveBeenCalledWith('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
             expect(result).toEqual(null);
         });
+        it("return invalid input when input score is not number", function () {
+            const input = "宁润婷,111,汉,物网131,语文:wqq,数学:sfd,英语:85,计算机:90"
+
+            spyOn(console,'error');
+            const result = convertToStudentObject(input);
+
+            expect(console.error).toHaveBeenCalledWith('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
+            expect(result).toEqual(null);
+        });
     });
     describe("A suit for convertToStudentIdList", function () {
+        beforeAll(function () {
+           allStudentInfo = {'111':{}};
+        });
+        afterAll(function () {
+           allStudentInfo = {};
+        });
        it("return string arr when input is student id string", function () {
             const input = "111,123,135";
             const output = ['111','123','135'];
@@ -248,6 +263,14 @@ describe("A suit for date type convert functions", function () {
            convertToStudentIdList(input);
 
            expect(console.error).toHaveBeenCalledWith('请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：');
+       });
+       it("return string arr when input is only have a student id", function () {
+            const input = '111';
+            const output = ['111'];
+
+            const result = convertToStudentIdList(input);
+
+            expect(result).toEqual(output);
        });
     });
 });
