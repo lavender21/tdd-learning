@@ -17,11 +17,8 @@ function isStudentExist(studentId) {
 function convertToStudentObject(studentInfoStr) {
     let arr = studentInfoStr.split(',');
     let arrScore = arr.slice(4,arr.length);
-    let isValidArrScore = arrScore.every(item => {
-        let arr = item.split(':');
-        return arr.length === 2 && !isNaN(arr[1]);
-    });
-    if (arr.length < 5 || !isValidArrScore){
+    let reg = /^([\u4e00-\u9fa5_a-zA-Z0-9]+[,]){4}(([\u4e00-\u9fa5_a-zA-Z0-9]+):[\d]+[,])*(([\u4e00-\u9fa5_a-zA-Z0-9]+):[\d]+)$/;
+    if (!reg.test(studentInfoStr)){
         console.error('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
         return null;
     }
@@ -35,7 +32,8 @@ function convertToStudentObject(studentInfoStr) {
 }
 
 function convertToStudentIdList(studentIdStr) {
-    if (studentIdStr.indexOf(',') === -1 && !isStudentExist(studentIdStr)){
+    let reg = /^(\d+[,])*(\d+)$/;
+    if (!reg.test(studentIdStr)){
         console.error('请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：');
         return false;
     }
@@ -150,14 +148,17 @@ rl.on('line', (input) => {
             switch (input) {
                 case '1':
                     flag = 'add';
-                    console.log('\n请输入学生信息（格式：姓名, 学号, 民族, 班级, 学科: 成绩, ...），按回车提交：\n');
+                    console.log('\n请输入学生信息（格式：姓名, 学号, 民族, 班级, 学科: 成绩, ...），按回车提交（按*返回上一级）：\n');
                     break;
                 case '2':
                     flag = 'search';
-                    console.log('\n请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n');
+                    console.log('\n请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交（按*返回上一级）：\n');
                     break;
                 case '3':
                     rl.close();
+                    break;
+                default:
+                    printMenu();
                     break;
             }
             break;
