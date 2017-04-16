@@ -19,17 +19,13 @@ function convertToStudentObject(studentInfoStr) {
     let arrScore = arr.slice(4,arr.length);
     let isValidArrScore = arrScore.every(item => {
         let arr = item.split(':');
-        return arr.length === 2;
+        return arr.length === 2 && !isNaN(arr[1]);
     });
-    if (arr.length < 5){
+    if (arr.length < 5 || !isValidArrScore){
         console.error('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
-        return false;
+        return null;
     }
-    if (!isValidArrScore){
-        console.error('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
-        return false;
-    }
-    let studentObj = {name:arr[0],id:arr[1],nation:arr[2],class:arr[3],score:[]};
+    let studentObj = {name:arr[0],id:arr[1],nation:arr[2],class:arr[3],score:[],average:0,middleScore:0};
     studentObj.score = arrScore.map(item => {
         let obj = {};
         obj[item.split(':')[0]] = Number(item.split(':')[1]);
@@ -43,56 +39,40 @@ function convertToStudentIdList(studentIdStr) {
         console.error('请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：');
         return false;
     }
-    let idArr = studentIdStr.split(',');
-    return idArr.filter(item => {
-        if (!isStudentExist(item)){
-            console.error(item+' 不存在该学生信息');
-        }
-       return isStudentExist(item);
-    });
-}
-
-function addStudentInfo(studentObj) {
-    if (!studentObj.hasOwnProperty('id')){
-        return false;
-    }
-    allStudentInfo[studentObj.id] = studentObj;
-    return true;
+    return studentIdStr.split(',');
 }
 
 function generateStudentInfo(input) {
     let studentObj = convertToStudentObject(input);
+    if (studentObj === null){
+        return false;
+    }
     if (isStudentExist(studentObj.id)){
         console.log('改学生信息已经存在');
-        return;
+        return false;
     }
-    if (addStudentInfo(studentObj)){
-        console.log(`学生${studentObj.name}的成绩被添加`);
-        return;
-    }
+    allStudentInfo[studentObj.id] = studentObj;
+    console.log(`学生${studentObj.name}的成绩被添加`);
+    return true;
 }
 
-function getStudentInfo(studentIdArr) {
+function filterStudentId(studentIdArr) {
     return studentIdArr.filter(item => {
         if (!isStudentExist(item)){
             console.error(`不存${item}的信息`);
         }
         return isStudentExist(item);
-    }).map(item => {
-            return allStudentInfo[item];
-        });
-
+    });
 }
 
-function calculateScore(studentList) {
+function getClassInfoList(klassId) {
     let klassList = {};
-    for(let id in allStudentInfo){
+    for (let id in allStudentInfo) {
         if (!klassList.hasOwnProperty(allStudentInfo[id].class)) {
             klassList[allStudentInfo[id].class] = [];
         }
         klassList[allStudentInfo[id].class].push(allStudentInfo[id]);
     }
-
     for(let classId in klassList){
         let average = 0;
         let middleScore = [];
@@ -110,13 +90,17 @@ function calculateScore(studentList) {
         let middleItem = middleScore.sort()[parseInt(middleScore.length/2)];
         klassList[classId] = Object.assign({},{studentList:klassScore},{average:average/klassScore.length,middleScore:middleItem})
     }
+    return klassList.hasOwnProperty(klassId)?klassList[klassId]:null;
+}
 
-    let klass = allStudentInfo[studentList[0]].class;
-    let scoreList = klassList[klass].studentList.filter(item => {
+function calculateScore(studentList) {
+    let klassId = allStudentInfo[studentList[0]].class;
+    let klassInfo = getClassInfoList(klassId);
+    let scoreList = klassInfo.studentList.filter(item => {
        return studentList.indexOf(item.id) > -1;
     });
     return Object.assign({}, {studentList:scoreList,
-        average:klassList[klass].average,middleScore:klassList[klass].middleScore});
+        average:klassInfo.average,middleScore:klassInfo.middleScore});
 }
 
 function printStudentScore(scoreObj) {
@@ -140,10 +124,11 @@ function printStudentScore(scoreObj) {
 
 function generateStudentScore(studentIdStr) {
     let studentIdArr = convertToStudentIdList(studentIdStr);
-    if (studentIdArr.length === 0){
-        return;
+    let filterStudentIdArr = filterStudentId(studentIdArr);
+    if (studentIdArr.length === 0 || filterStudentIdArr.length === 0){
+        return false;
     }
-    let scoreObj = calculateScore(studentIdArr);
+    let scoreObj = calculateScore(filterStudentIdArr);
     printStudentScore(scoreObj);
-    printMenu();
+    return true;
 }
