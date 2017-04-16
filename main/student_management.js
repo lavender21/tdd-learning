@@ -135,3 +135,44 @@ function generateStudentScore(studentIdStr) {
     printStudentScore(scoreObj);
     return true;
 }
+
+const readline = require('readline');
+
+const rl = readline.createInterface({
+    input:process.stdin,
+    output:process.stdout
+});
+let flag = 'menu';
+printMenu();
+rl.on('line', (input) => {
+    switch (flag){
+        case 'menu':
+            switch (input) {
+                case '1':
+                    flag = 'add';
+                    console.log('\n请输入学生信息（格式：姓名, 学号, 民族, 班级, 学科: 成绩, ...），按回车提交：\n');
+                    break;
+                case '2':
+                    flag = 'search';
+                    console.log('\n请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：\n');
+                    break;
+                case '3':
+                    rl.close();
+                    break;
+            }
+            break;
+        case 'add':
+            if ( input === '*' || generateStudentInfo(input)){
+                flag = 'menu';
+                printMenu();
+            }
+            break;
+        case 'search':
+            if ( input === '*' || generateStudentScore(input)){
+                flag = 'menu';
+                printMenu();
+            }
+            break;
+    }
+});
+
