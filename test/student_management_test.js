@@ -34,6 +34,25 @@ describe("suits for generateStudentInfo function", function () {
         });
     });
 
+    describe("A suit for calculateStudentScore function", function () {
+        it("calculate average and sum score when input a student obj", function () {
+            const input =  {
+                name: '宁润婷', id: '111', nation: '汉', class: '物网131',
+                score: [{'语文': 80},{'数学': 90},{'英语': 85},{'计算机': 90}],
+                average:0,sumScore:0
+            };
+            const output =  {
+                name: '宁润婷', id: '111', nation: '汉', class: '物网131',
+                score: [{'语文': 80},{'数学': 90},{'英语': 85},{'计算机': 90}],
+                average:86.25,sumScore:345
+            };
+
+            const result = calculateStudentScore(input);
+
+            expect(result).toEqual(output);
+        });
+    });
+
     describe("A suit for generateStudentInfo function", function () {
         beforeAll(function () {
            allStudentInfo = {'111':{}};

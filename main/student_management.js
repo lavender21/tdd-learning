@@ -40,16 +40,24 @@ function convertToStudentIdList(studentIdStr) {
     return studentIdStr.split(',');
 }
 
+function calculateStudentScore(studentObj) {
+    studentObj.score.forEach(item => {
+       studentObj.sumScore += item[Object.keys(item)];
+    });
+    studentObj.average = Number((studentObj.sumScore/studentObj.score.length).toFixed(2));
+    return studentObj;
+}
+
 function generateStudentInfo(input) {
     let studentObj = convertToStudentObject(input);
-    if (studentObj === null){
+    if (!studentObj){
         return false;
     }
     if (isStudentExist(studentObj.id)){
         console.log('改学生信息已经存在');
         return false;
     }
-    allStudentInfo[studentObj.id] = studentObj;
+    allStudentInfo[studentObj.id] = calculateStudentScore(studentObj);
     console.log(`学生${studentObj.name}的成绩被添加`);
     return true;
 }
@@ -175,5 +183,6 @@ rl.on('line', (input) => {
             }
             break;
     }
+    rl.prompt();
 });
 
