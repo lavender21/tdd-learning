@@ -80,45 +80,48 @@ describe("suits for generateStudentInfo function", function () {
 });
 
 describe("suits for generateStudentScore function", function () {
-    describe("A suit for filterStudentId function", function () {
-        beforeAll(function () {
-           allStudentInfo = {
-               '111':{},
-               '123':{},
-               '135':{},
-           }
-        });
-        afterAll(function () {
-            allStudentInfo = {};
-        });
-        it("return student id list when input student id list is exist", function () {
-            const input = ['111','123','135'];
-            const output = ['111','123','135'];
+    describe("suits for getStudentInfo function", function () {
+        describe("A suit for getStudentInfo function", function () {
+            beforeAll(function () {
+                allStudentInfo = {
+                    '111':{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90}],average:90,sumScore:90},
+                    '123':{name:'aaa',id:'123',nation:'han',class:'131',score:[{'语文':90}],average:90,sumScore:90},
+                    '135':{name:'aaa',id:'135',nation:'han',class:'131',score:[{'语文':90}],average:90,sumScore:90}
+                }
+            });
+            afterAll(function () {
+                allStudentInfo = {};
+            });
+            it("return student info list when input student id list", function () {
+                const input = ['111','123','135'];
+                const output = [{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90}],average:90,sumScore:90},
+                    {name:'aaa',id:'123',nation:'han',class:'131',score:[{'语文':90}],average:90,sumScore:90},
+                    {name:'aaa',id:'135',nation:'han',class:'131',score:[{'语文':90}],average:90,sumScore:90}];
 
-            const result = filterStudentId(input);
+                const result = getStudentInfo(input);
 
-            expect(result).toEqual(output);
-        });
-        it("console log 不存333的信息 when input student id list contain not exist student id", function () {
-            const input = ['111','123','333'];
-            const output = ['111','123'];
+                expect(result).toEqual(output);
+            });
+            it("console log 不存333的信息 when input student id list contain not exist student id", function () {
+                const input = ['111','123','333'];
+                const output = [{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90}],average:90,sumScore:90},
+                    {name:'aaa',id:'123',nation:'han',class:'131',score:[{'语文':90}],average:90,sumScore:90}];
 
-            spyOn(console,'error');
-            const result = filterStudentId(input);
+                spyOn(console,'error');
+                const result = getStudentInfo(input);
 
-            expect(console.error).toHaveBeenCalledWith('不存333的信息');
-            expect(result).toEqual(output);
+                expect(console.error).toHaveBeenCalledWith('不存333的信息');
+                expect(result).toEqual(output);
+            });
         });
     });
 
-    describe("A suit for calculateScore function", function () {
+    describe("A suit for calculateClassScore function", function () {
         beforeAll(function () {
-           allStudentInfo = {'111':{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90},{'数学':90.5}]},
-            '123':{name:'bbb',id:'123',nation:'han',class:'131',score:[{'语文':70},{'数学':60}]},
-            '135':{name:'ccc',id:'135',nation:'han',class:'131',score:[{'语文':80},{'数学':100}]},
-            '222':{name:'ddd',id:'222',nation:'han',class:'132',score:[{'语文':50},{'数学':80},{'计算机':60}]},
-            '223':{name:'eee',id:'223',nation:'han',class:'132',score:[{'语文':100},{'数学':70},{'计算机':90}]}
-           }
+            allStudentInfo = {'111':{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90},{'数学':90.5}],average:90.25,sumScore:180.5},
+                '123':{name:'bbb',id:'123',nation:'han',class:'131',score:[{'语文':70},{'数学':60}],average:65,sumScore:130},
+                '135':{name:'ccc',id:'135',nation:'han',class:'131',score:[{'语文':80},{'数学':100}],average:90,sumScore:180}
+            }
         });
         afterAll(function () {
             allStudentInfo = {};
@@ -133,7 +136,7 @@ describe("suits for generateStudentScore function", function () {
             middleScore:180
             };
 
-            const result = calculateScore(input);
+            const result = calculateClassScore(input);
 
             expect(result).toEqual(output);
         });
@@ -146,7 +149,7 @@ describe("suits for generateStudentScore function", function () {
                 middleScore:180
             };
 
-            const result = calculateScore(input);
+            const result = calculateClassScore(input);
 
             expect(result).toEqual(output);
         });
@@ -179,11 +182,9 @@ describe("suits for generateStudentScore function", function () {
 
     describe("A suit for generateStudentScore function", function () {
         beforeAll(function () {
-            allStudentInfo = {'111':{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90},{'数学':90.5}]},
-                '123':{name:'bbb',id:'123',nation:'han',class:'131',score:[{'语文':70},{'数学':60}]},
-                '135':{name:'ccc',id:'135',nation:'han',class:'131',score:[{'语文':80},{'数学':100}]},
-                '222':{name:'ddd',id:'222',nation:'han',class:'132',score:[{'语文':50},{'数学':80},{'计算机':60}]},
-                '223':{name:'eee',id:'223',nation:'han',class:'132',score:[{'语文':100},{'数学':70},{'计算机':90}]}
+            allStudentInfo = {'111':{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90},{'数学':90.5}],average:90.25,sumScore:180.5},
+                '123':{name:'bbb',id:'123',nation:'han',class:'131',score:[{'语文':70},{'数学':60}],average:65,sumScore:130},
+                '135':{name:'ccc',id:'135',nation:'han',class:'131',score:[{'语文':80},{'数学':100}],average:90,sumScore:180}
             }
         });
         afterAll(function () {
@@ -225,7 +226,7 @@ describe("A suit for date type convert functions", function () {
             const output = {
                 name: '宁润婷', id: '111', nation: '汉', class: '物网131',
                 score: [{'语文': 80},{'数学': 90},{'英语': 85},{'计算机': 90}],
-                average:0,middleScore:0
+                average:0,sumScore:0
             };
 
             const result = convertToStudentObject(input);

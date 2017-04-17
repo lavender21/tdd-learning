@@ -22,7 +22,7 @@ function convertToStudentObject(studentInfoStr) {
         console.error('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
         return null;
     }
-    let studentObj = {name:arr[0],id:arr[1],nation:arr[2],class:arr[3],score:[],average:0,middleScore:0};
+    let studentObj = {name:arr[0],id:arr[1],nation:arr[2],class:arr[3],score:[],average:0,sumScore:0};
     studentObj.score = arrScore.map(item => {
         let obj = {};
         obj[item.split(':')[0]] = Number(item.split(':')[1]);
@@ -62,51 +62,41 @@ function generateStudentInfo(input) {
     return true;
 }
 
-function filterStudentId(studentIdArr) {
+function getStudentInfo(studentIdArr) {
     return studentIdArr.filter(item => {
         if (!isStudentExist(item)){
             console.error(`不存${item}的信息`);
         }
         return isStudentExist(item);
+    }).map(item => {
+        return allStudentInfo[item];
     });
+
 }
 
-function getClassInfoList(klassId) {
-    let klassList = {};
-    for (let id in allStudentInfo) {
-        if (!klassList.hasOwnProperty(allStudentInfo[id].class)) {
-            klassList[allStudentInfo[id].class] = [];
-        }
-        klassList[allStudentInfo[id].class].push(allStudentInfo[id]);
+function calculateClassScore(studentList) {
+    let scoreList = getStudentInfo(studentList);
+    if (scoreList.length === 0){
+        return false;
     }
-    for(let classId in klassList){
-        let average = 0;
-        let middleScore = [];
-        let klassScore = klassList[classId].map(item => {
-            let sumScore = 0;
-            item.score.forEach(val => {
-                sumScore += val[Object.keys(val)];
-            });
-            item.average = sumScore / item.score.length;
-            item.sumScore = sumScore;
-            average += sumScore;
-            middleScore.push(Number(sumScore));
-            return item;
-        });
-        let middleItem = middleScore.sort()[parseInt(middleScore.length/2)];
-        klassList[classId] = Object.assign({},{studentList:klassScore},{average:average/klassScore.length,middleScore:middleItem})
+    let classAverage = 0;
+    let sumScoreList = [];
+    for(let item in allStudentInfo){
+        classAverage += allStudentInfo[item].sumScore;
+        sumScoreList.push(allStudentInfo[item].sumScore);
     }
-    return klassList.hasOwnProperty(klassId)?klassList[klassId]:null;
-}
-
-function calculateScore(studentList) {
-    let klassId = allStudentInfo[studentList[0]].class;
-    let klassInfo = getClassInfoList(klassId);
-    let scoreList = klassInfo.studentList.filter(item => {
-       return studentList.indexOf(item.id) > -1;
-    });
-    return Object.assign({}, {studentList:scoreList,
-        average:klassInfo.average,middleScore:klassInfo.middleScore});
+    sumScoreList = sumScoreList.sort();
+    let middleScore = 0;
+    if (sumScoreList.length % 2 === 0){
+        let left = sumScoreList[sumScoreList.length/2-1];
+        let right = sumScoreList[sumScoreList.length/2];
+        middleScore = (left + right)/2;
+    }else {
+        middleScore = sumScoreList[Math.floor(sumScoreList.length/2)];
+    }
+    return {studentList:scoreList,
+        average:classAverage/Object.keys(allStudentInfo).length,
+        middleScore:middleScore};
 }
 
 function printStudentScore(scoreObj) {
@@ -133,11 +123,10 @@ function generateStudentScore(studentIdStr) {
     if (!studentIdArr){
         return false;
     }
-    let filterStudentIdArr = filterStudentId(studentIdArr);
-    if (filterStudentIdArr.length === 0){
+    let scoreObj = calculateClassScore(studentIdArr);
+    if (!scoreObj){
         return false;
     }
-    let scoreObj = calculateScore(filterStudentIdArr);
     printStudentScore(scoreObj);
     return true;
 }
