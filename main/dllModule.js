@@ -1,4 +1,6 @@
 let allStudentInfo = {};
+const printer = require('./printModule');
+const parser = require('./parseModule');
 
 function isStudentExist(studentId) {
     return allStudentInfo.hasOwnProperty(studentId);
@@ -50,15 +52,39 @@ function calculateClassScore() {
     };
 }
 
+function generateStudentInfo(input) {
+    if (!parser.isValidStudentInput(input)) {
+        printer.printStudentError();
+        return false;
+    }
+    let student = parser.convertToStudentObject(input);
+    if (isStudentExist(student.id)) {
+        printer.printStudentWarning();
+        return false;
+    }
+    getAllStudentInfo()[student.id] = calculateStudentScore(student);
+    printer.printStudentSuccess(student);
+    return true;
+}
+
+function generateStudentScore(input) {
+    if (!parser.isValidStudentIdInput(input)) {
+        printer.printStudentIdError();
+        return false;
+    }
+    let studentIdArr = parser.convertToStudentIdList(input);
+    let classScore = calculateClassScore();
+    let studentList = getStudentInfo(studentIdArr);
+    if (!classScore || studentList.length === 0) {
+        return false;
+    }
+    let scoreObj = Object.assign({}, classScore, {studentList: studentList});
+    printer.printStudentScore(scoreObj);
+    return true;
+}
+
 module.exports = {
+    generateStudentInfo:generateStudentInfo,
 
-    isStudentExist: isStudentExist,
-
-    getAllStudentInfo:getAllStudentInfo,
-
-    getStudentInfo:getStudentInfo,
-
-    calculateStudentScore:calculateStudentScore,
-
-    calculateClassScore:calculateClassScore
+    generateStudentScore:generateStudentScore
 };
