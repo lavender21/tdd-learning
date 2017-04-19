@@ -1,33 +1,33 @@
 module.exports = {
 
-     printMenu() {
+    printMenu() {
         console.log(`1. 添加学生
 2. 生成成绩单
 3. 退出
 请输入你的选择（1～3）：`);
     },
 
-     printStudentPrompt() {
+    printStudentPrompt() {
         console.log('\n请输入学生信息（格式：姓名, 学号, 民族, 班级, 学科: 成绩, ...），按回车提交（按*返回上一级）：\n');
     },
 
-     printStudentError() {
+    printStudentError() {
         console.error('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
     },
 
-     printStudentWarning() {
+    printStudentWarning() {
         console.log('改学生信息已经存在');
     },
 
-     printStudentSuccess(student) {
+    printStudentSuccess(student) {
         console.log(`学生${student.name}的成绩被添加`);
     },
 
-     printStudentIdPrompt() {
+    printStudentIdPrompt() {
         console.log('\n请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交（按*返回上一级）：\n');
     },
 
-     printStudentScore(scoreObj) {
+    printStudentScore(scoreObj) {
         let subjectStr = scoreObj.studentList[0].score.map(item => {
             return Object.keys(item);
         }).join('|');
@@ -45,7 +45,7 @@ module.exports = {
         console.log(result);
     },
 
-     printStudentIdError() {
+    printStudentIdError() {
         console.error('请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：');
     }
 };
