@@ -7,45 +7,32 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
-
-let flag = 'menu';
+function exit() {
+    process.exit();
+}
+const routerList = {
+    '1': {status: 'add', prompt: printer.printStudentPrompt},
+    '2': {status: 'search', prompt: printer.printStudentIdPrompt},
+    '3': {status: 'exit',prompt: exit},
+    '*': {status: 'menu', prompt: printer.printMenu}
+};
+const routerStatusList = {
+    'menu': {action: printer.printMenu},
+    'add': {action: generateStudentInfo},
+    'search': {action: generateStudentScore},
+};
+let routeStatus = 'menu';
 printer.printMenu();
-rl.on('line', (input) => {
-    switch (flag) {
-        case 'menu':
-            switch (input) {
-                case '1':
-                    flag = 'add';
-                    printer.printStudentPrompt();
-                    break;
-                case '2':
-                    flag = 'search';
-                    printer.printStudentIdPrompt();
-                    break;
-                case '3':
-                    rl.close();
-                    break;
-                default:
-                    printer.printMenu();
-                    break;
-            }
-            break;
-        case 'add':
-            const result1 = generateStudentInfo(input);
-            if (input === '*' || result1) {
-                flag = 'menu';
-                printer.printMenu();
-            }
-            break;
-        case 'search':
-            const result2 = generateStudentScore(input);
-            if (input === '*' || result2) {
-                flag = 'menu';
-                printer.printMenu();
-            }
-            break;
-    }
-});
+rl.on('line', mainMenu);
+
+function mainMenu(input) {
+     if (routerList.hasOwnProperty(input)) {
+         routeStatus = routerList[input].status;
+         routerList[input].prompt();
+     } else {
+         routerStatusList[routeStatus].action(input);
+     }
+}
 
 function generateStudentInfo(input) {
     if (!parser.isValidStudentInput(input)) {
