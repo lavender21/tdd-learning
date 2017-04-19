@@ -3,12 +3,8 @@
  */
 let allStudentInfo = {};
 
-function printMenu() {
-    console.log(`1. 添加学生
-2. 生成成绩单
-3. 退出
-请输入你的选择（1～3）：`);
-}
+
+const printer = require('./printModule');
 
 function isStudentExist(studentId) {
     return allStudentInfo.hasOwnProperty(studentId);
@@ -41,32 +37,32 @@ function isValidStudentIdInput(studentIdStr) {
     let reg = /^(\d+[,])*(\d+)$/;
     return reg.test(studentIdStr);
 }
+
 function convertToStudentIdList(studentIdStr) {
     return studentIdStr.split(',');
 }
 
 function calculateStudentScore(student) {
     let sumScore = 0;
-    let average = 0;
     student.score.forEach(item => {
        sumScore += item[Object.keys(item)];
     });
-    average = Number((sumScore/student.score.length).toFixed(2));
+    let average = Number((sumScore/student.score.length).toFixed(2));
     return Object.assign({},student,{average:average,sumScore:sumScore});
 }
 
 function generateStudentInfo(input) {
     if (!isValidStudentInput(input)){
-        console.error('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
+        printer.printStudentError();
         return false;
     }
     let student = convertToStudentObject(input);
     if (isStudentExist(student.id)){
-        console.log('改学生信息已经存在');
+        printer.printStudentWarning();
         return false;
     }
     allStudentInfo[student.id] = calculateStudentScore(student);
-    console.log(`学生${student.name}的成绩被添加`);
+    printer.printStudentSuccess(student);
     return true;
 }
 
@@ -101,28 +97,9 @@ function calculateClassScore() {
         middleScore:middleScore};
 }
 
-function printStudentScore(scoreObj) {
-    console.log(scoreObj);
-    let subjectStr = scoreObj.studentList[0].score.map(item => {
-        return Object.keys(item);
-    }).join('|');
-    let scoreListStr = "";
-    scoreObj.studentList.forEach(item => {
-       scoreListStr += item.name + '|';
-       item.score.forEach(val => {
-          scoreListStr += val[Object.keys(val)]+'|';
-       });
-       scoreListStr += item.average + '|' + item.sumScore + '\n';
-    });
-    let result = `成绩单\n姓名|${subjectStr}|平均分|总分\n`+
-        `========================\n${scoreListStr}========================\n`+
-        `全班总分平均数：${scoreObj.average}\n全班总分中位数：${scoreObj.middleScore}\n`;
-    console.log(result);
-}
-
 function generateStudentScore(input) {
     if (!isValidStudentIdInput(input)){
-        console.error('请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：');
+        printer.printStudentIdError();
         return false;
     }
     let studentIdArr = convertToStudentIdList(input);
@@ -132,7 +109,7 @@ function generateStudentScore(input) {
         return false;
     }
     let scoreObj = Object.assign({},classScore,{studentList:studentList});
-    printStudentScore(scoreObj);
+    printer.printStudentScore(scoreObj);
     return true;
 }
 
@@ -143,37 +120,37 @@ const rl = readline.createInterface({
     output:process.stdout
 });
 let flag = 'menu';
-printMenu();
+printer.printMenu();
 rl.on('line', (input) => {
     switch (flag){
         case 'menu':
             switch (input) {
                 case '1':
                     flag = 'add';
-                    console.log('\n请输入学生信息（格式：姓名, 学号, 民族, 班级, 学科: 成绩, ...），按回车提交（按*返回上一级）：\n');
+                    printer.printStudentPrompt();
                     break;
                 case '2':
                     flag = 'search';
-                    console.log('\n请输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交（按*返回上一级）：\n');
+                    printer.printStudentIdPrompt();
                     break;
                 case '3':
                     rl.close();
                     break;
                 default:
-                    printMenu();
+                    printer.printMenu();
                     break;
             }
             break;
         case 'add':
             if ( input === '*' || generateStudentInfo(input)){
                 flag = 'menu';
-                printMenu();
+                printer.printMenu();
             }
             break;
         case 'search':
             if ( input === '*' || generateStudentScore(input)){
                 flag = 'menu';
-                printMenu();
+                printer.printMenu();
             }
             break;
     }
