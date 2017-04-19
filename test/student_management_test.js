@@ -100,15 +100,13 @@ describe("suits for generateStudentScore function", function () {
 
                 expect(result).toEqual(output);
             });
-            it("console log 不存333的信息 when input student id list contain not exist student id", function () {
+            it("return exist student info when input student id list contain not exist student id", function () {
                 const input = ['111','123','333'];
                 const output = [{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90}],average:90,sumScore:90},
                     {name:'aaa',id:'123',nation:'han',class:'131',score:[{'语文':90}],average:90,sumScore:90}];
 
-                spyOn(console,'error');
                 const result = getStudentInfo(input);
 
-                expect(console.error).toHaveBeenCalledWith('不存333的信息');
                 expect(result).toEqual(output);
             });
         });
@@ -124,29 +122,9 @@ describe("suits for generateStudentScore function", function () {
             allStudentInfo = {};
         });
         it("return score list when input student id list is whole class", function () {
-            const input = ['111','123','135'];
+            const output = {average:163.5, middleScore:180};
 
-            const output = {studentList:[{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90},{'数学':90.5}],average:90.25,sumScore:180.5},
-            {name:'bbb',id:'123',nation:'han',class:'131',score:[{'语文':70},{'数学':60}],average:65,sumScore:130},
-            {name:'ccc',id:'135',nation:'han',class:'131',score:[{'语文':80},{'数学':100}],average:90,sumScore:180}],
-            average:163.5,
-            middleScore:180
-            };
-
-            const result = calculateClassScore(input);
-
-            expect(result).toEqual(output);
-        });
-        it("return score list when input student id list is the part of a class", function () {
-            const input = ['111','123'];
-
-            const output = {studentList:[{name:'aaa',id:'111',nation:'han',class:'131',score:[{'语文':90},{'数学':90.5}],average:90.25,sumScore:180.5},
-                {name:'bbb',id:'123',nation:'han',class:'131',score:[{'语文':70},{'数学':60}],average:65,sumScore:130}],
-                average:163.5,
-                middleScore:180
-            };
-
-            const result = calculateClassScore(input);
+            const result = calculateClassScore();
 
             expect(result).toEqual(output);
         });
@@ -245,14 +223,6 @@ describe("A suit for data type convert functions", function () {
 
             expect(result).toEqual(output);
        });
-       it("console.error invalid input when input is invalid", function () {
-           const input = "1112321312 sdfsfs233";
-
-           spyOn(console,'error');
-           convertToStudentIdList(input);
-
-           expect(console.error).toHaveBeenCalledWith('请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：');
-       });
        it("return string arr when input is only have a student id", function () {
             const input = '111';
             const output = ['111'];
@@ -291,6 +261,23 @@ describe("A suit for data invalid functions", function () {
            const input = "宁润婷,111,汉,物网131,语文:wqq,数学:sfd,英语:85,计算机:90"
 
            const result = isValidStudentInput(input);
+
+           expect(result).toBe(false);
+       });
+   });
+
+   describe("suits for check the input student id list is valid", function () {
+       it("return true when input is valid", function () {
+            const input = "111,222,333";
+
+            const result = isValidStudentIdInput(input);
+
+            expect(result).toBe(true);
+       });
+       it("return false when input is invalid", function () {
+           const input = "1112321312 sdfsfs233";
+
+           const result = isValidStudentIdInput(input);
 
            expect(result).toBe(false);
        });

@@ -37,12 +37,11 @@ function convertToStudentObject(studentStr) {
     return {name:name, id:id, nation: nation, klass:klass, score: scoreArr};
 }
 
-function convertToStudentIdList(studentIdStr) {
+function isValidStudentIdInput(studentIdStr) {
     let reg = /^(\d+[,])*(\d+)$/;
-    if (!reg.test(studentIdStr)){
-        console.error('请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：');
-        return false;
-    }
+    return reg.test(studentIdStr);
+}
+function convertToStudentIdList(studentIdStr) {
     return studentIdStr.split(',');
 }
 
@@ -73,18 +72,14 @@ function generateStudentInfo(input) {
 
 function getStudentInfo(studentIdArr) {
     return studentIdArr.filter(item => {
-        if (!isStudentExist(item)){
-            console.error(`不存${item}的信息`);
-        }
         return isStudentExist(item);
     }).map(item => {
         return allStudentInfo[item];
     });
 }
 
-function calculateClassScore(studentList) {
-    let scoreList = getStudentInfo(studentList);
-    if (scoreList.length === 0){
+function calculateClassScore() {
+    if (allStudentInfo.length === 0){
         return false;
     }
     let classAverage = 0;
@@ -102,16 +97,15 @@ function calculateClassScore(studentList) {
     }else {
         middleScore = sumScoreList[Math.floor(sumScoreList.length/2)];
     }
-    return {studentList:scoreList,
-        average:classAverage/Object.keys(allStudentInfo).length,
+    return {average:classAverage/Object.keys(allStudentInfo).length,
         middleScore:middleScore};
 }
 
 function printStudentScore(scoreObj) {
-    let subjectStr = "";
-    scoreObj.studentList[0].score.forEach(item => {
-        subjectStr += Object.keys(item)+'|';
-    });
+    console.log(scoreObj);
+    let subjectStr = scoreObj.studentList[0].score.map(item => {
+        return Object.keys(item);
+    }).join('|');
     let scoreListStr = "";
     scoreObj.studentList.forEach(item => {
        scoreListStr += item.name + '|';
@@ -120,21 +114,24 @@ function printStudentScore(scoreObj) {
        });
        scoreListStr += item.average + '|' + item.sumScore + '\n';
     });
-    let result = `成绩单\n姓名|${subjectStr}平均分|总分\n`+
+    let result = `成绩单\n姓名|${subjectStr}|平均分|总分\n`+
         `========================\n${scoreListStr}========================\n`+
         `全班总分平均数：${scoreObj.average}\n全班总分中位数：${scoreObj.middleScore}\n`;
     console.log(result);
 }
 
-function generateStudentScore(studentIdStr) {
-    let studentIdArr = convertToStudentIdList(studentIdStr);
-    if (!studentIdArr){
+function generateStudentScore(input) {
+    if (!isValidStudentIdInput(input)){
+        console.error('请按正确的格式输入要打印的学生的学号（格式： 学号, 学号,...），按回车提交：');
         return false;
     }
-    let scoreObj = calculateClassScore(studentIdArr);
-    if (!scoreObj){
+    let studentIdArr = convertToStudentIdList(input);
+    let classScore = calculateClassScore();
+    let studentList = getStudentInfo(studentIdArr);
+    if (!classScore || studentList.length === 0){
         return false;
     }
+    let scoreObj = Object.assign({},classScore,{studentList:studentList});
     printStudentScore(scoreObj);
     return true;
 }
