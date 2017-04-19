@@ -14,21 +14,27 @@ function isStudentExist(studentId) {
     return allStudentInfo.hasOwnProperty(studentId);
 }
 
-function convertToStudentObject(studentInfoStr) {
-    let arr = studentInfoStr.split(',');
-    let arrScore = arr.slice(4,arr.length);
+function isValidStudentInput(studentInfoStr) {
     let reg = /^([\u4e00-\u9fa5_a-zA-Z0-9]+[,]){4}(([\u4e00-\u9fa5_a-zA-Z0-9]+):[\d]+[,])*(([\u4e00-\u9fa5_a-zA-Z0-9]+):[\d]+)$/;
-    if (!reg.test(studentInfoStr)){
-        console.error('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
-        return null;
+    if (!reg.test(studentInfoStr)) {
+        return false;
     }
-    let studentObj = {name:arr[0],id:arr[1],nation:arr[2],class:arr[3],score:[],average:0,sumScore:0};
-    studentObj.score = arrScore.map(item => {
+    return true;
+}
+
+function convertToStudentObject(studentStr) {
+    let arr = studentStr.split(',');
+    const name = arr[0];
+    const id = arr[1];
+    const nation = arr[2];
+    const klass = arr[3];
+    const scoreArr = arr.slice(4, arr.length).map(item => {
         let obj = {};
-        obj[item.split(':')[0]] = Number(item.split(':')[1]);
+        let arr = item.split(':');
+        obj[arr[0]] = Number(arr[1]);
         return obj;
     });
-    return studentObj;
+    return {name:name, id:id, nation: nation, klass:klass, score: scoreArr};
 }
 
 function convertToStudentIdList(studentIdStr) {
@@ -40,25 +46,28 @@ function convertToStudentIdList(studentIdStr) {
     return studentIdStr.split(',');
 }
 
-function calculateStudentScore(studentObj) {
-    studentObj.score.forEach(item => {
-       studentObj.sumScore += item[Object.keys(item)];
+function calculateStudentScore(student) {
+    let sumScore = 0;
+    let average = 0;
+    student.score.forEach(item => {
+       sumScore += item[Object.keys(item)];
     });
-    studentObj.average = Number((studentObj.sumScore/studentObj.score.length).toFixed(2));
-    return studentObj;
+    average = Number((sumScore/student.score.length).toFixed(2));
+    return Object.assign({},student,{average:average,sumScore:sumScore});
 }
 
 function generateStudentInfo(input) {
-    let studentObj = convertToStudentObject(input);
-    if (!studentObj){
+    if (!isValidStudentInput(input)){
+        console.error('请按正确的格式输入（格式：姓名, 学号, 学科: 成绩, ...）：');
         return false;
     }
-    if (isStudentExist(studentObj.id)){
+    let student = convertToStudentObject(input);
+    if (isStudentExist(student.id)){
         console.log('改学生信息已经存在');
         return false;
     }
-    allStudentInfo[studentObj.id] = calculateStudentScore(studentObj);
-    console.log(`学生${studentObj.name}的成绩被添加`);
+    allStudentInfo[student.id] = calculateStudentScore(student);
+    console.log(`学生${student.name}的成绩被添加`);
     return true;
 }
 
@@ -71,7 +80,6 @@ function getStudentInfo(studentIdArr) {
     }).map(item => {
         return allStudentInfo[item];
     });
-
 }
 
 function calculateClassScore(studentList) {
