@@ -34,5 +34,5 @@ module.exports = {
 
     convertToStudentObject:convertToStudentObject,
 
-    convertToStudentIdList:convertToStudentIdList,
+    convertToStudentIdList:convertToStudentIdList
 };

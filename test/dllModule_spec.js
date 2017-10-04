@@ -142,4 +142,3 @@ describe("A suit for calculateStudentScore function", function () {
         expect(result).toEqual(output);
     });
 });
-
